@@ -10,6 +10,8 @@ const App = () => {
   const [myBalance, setMyBalance] = useState();
   const [symbol, setSymbol] = useState();
   const [sendAddress, setSendAddress] = useState("");
+  const [checkAddressAccount, setcheckAddressAccount] = useState("");
+  const [AddressAccount, setAddressAccount] = useState("");
   const [sendToken, setSendToken] = useState("");
 
 
@@ -60,6 +62,18 @@ const App = () => {
       const parsedResponse = formatEther(response);
       setMyBalance(parsedResponse);
 
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const onClickCheckBalance = async () => {
+    try {
+      if (!AddressAccount) return;
+      const response = await contract.balanceOf(AddressAccount);
+      const parsedResponse = formatEther(response);
+      setcheckAddressAccount(parsedResponse);
+      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -140,9 +154,18 @@ const App = () => {
             <div className="box-style grow flex items-center">
                   {myBalance
                     ? `잔액: ${myBalance}${symbol}`
-                    : "잔액 확인"}
+                    : "내 계좌 잔액 확인"}
               </div>
             <button className="button-style ml-4" onClick={onClickMyBalance}>확인</button>
+          </div>
+          <div className="flex w-full flex-col gap-8">
+            <div className="box-style grow flex items-center">
+                  {checkAddressAccount
+                    ? `잔액: ${checkAddressAccount}${symbol}`
+                    : `잔액 : ${symbol}`}
+            </div>
+            <input className="input-style" type="text" placeholder="지갑주소" value={AddressAccount} onChange={(e) => {setAddressAccount(e.target.value)}}/>
+            <button className="button-style ml-4" onClick={onClickCheckBalance}>잔액 확인</button>
           </div>
           <div className="flex w-full items-end">
             <div className="flex flex-col gap-2 grow">
